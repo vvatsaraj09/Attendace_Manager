@@ -2,18 +2,36 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
+import 'package:sample/Calender.dart';
 
 void main() => runApp(new MyApp());
-
-class MyApp extends StatefulWidget {
-  _MyAppState createState() => new _MyAppState();
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Employee Management System',
+      theme: ThemeData(
+        primarySwatch: Colors.deepOrange,
+        accentColor: Colors.deepPurpleAccent,
+      ),
+      home: MyIntroPage(title: 'Check In Page'),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class MyIntroPage extends StatefulWidget {
+  MyIntroPage({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyIntroPage> {
   String lat = "";
   String long = "";
-  double long_admin = 72.835792;
-  double lat_admin = 19.1231508;
+  double long_admin = 72.8521211;
+  double lat_admin = 19.1129489;
   String approval = "Tap Get location to mark your attendance";
 
   double _distance;
@@ -31,11 +49,6 @@ class _MyAppState extends State<MyApp> {
       home: new Scaffold(
           appBar: new AppBar(
             title: new Text("Location"),
-            actions: <Widget>[
-              new IconButton(icon: new Icon(Icons.home), onPressed:null),
-              new IconButton(
-                  icon: new Icon(Icons.exit_to_app), onPressed: null),
-            ],
           ),
           body: Center(
             child: Column(
@@ -68,12 +81,24 @@ class _MyAppState extends State<MyApp> {
                           ),
                         ),
                         RaisedButton(
-                          onPressed: () async {
-                            
+                          onPressed: () {
+                            if(approval == "Approved")
+                            {
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                              builder: (context) => MyApp1()));
+                            }
+                            else{
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                              builder: (context) => MyApp()));
+                            }
                           },
                           color: Colors.blue,
                           child: Text(
-                            "Get Direction",
+                            "Mark attendance",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -85,7 +110,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  _getLocation() async {
+   _getLocation() async {
     position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     final coordinates = new Coordinates(position.latitude, position.longitude);
